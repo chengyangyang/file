@@ -1,0 +1,2 @@
+
+var url = document.location.href  ------> 获取当前页面完整 URL。

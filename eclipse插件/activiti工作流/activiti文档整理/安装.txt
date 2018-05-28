@@ -1,0 +1,14 @@
+
+插件的安装：
+
+打开eclipse，在Help->Install New Software后的弹出窗点击add按钮。 
+
+在弹出窗口的文本框里输入一下内容 
+Name：Activiti BPMN 2.0 designer 
+Location：http://www.activiti.org/designer/update
+
+
+
+------------------------------------------------
+
+window ---preferences----Activiti-----Save Actions ----在 Create process definition...前面打勾

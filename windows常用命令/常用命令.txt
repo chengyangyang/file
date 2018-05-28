@@ -1,0 +1,8 @@
+
+cmd -->
+	ipconfig ---- 查看ip 
+	
+	nslookup ----查询域名的解析结果
+	
+	
+msconfig -- 启动项关闭 

@@ -1,0 +1,29 @@
+
+@XmlRootElement 指定Category（类）为XML的根元素。
+
+@XmlElement。 Category类的属性默认指定映射为@XmlElement。
+
+@XmlRootElement和@XmlElement允许自定义命名空间和XML中元素的名称。如果没有定义的话，JAXB在运行的时候默认的使用同样的属性名和类名来定义XML元素。
+
+CategoryService的类声明上定义了@Path 和@Produces注解。@Path定义了URI路径，客户端可以通过这个路径访问到CategoryService对象。
+
+如@Path("/categoryservice")，那么URI请求，就可以是http://localhost:9000/categoryservice/。@Produces定义了服务类和方法生产内容的类型。如@Produces("application/xml")，那么CategoryService只会生产application/xml。
+
+@PathParam注解。@PathParam注解是用来给URI 路径一个模板变量，方法的输入参数。@PathParam("id") 就是URI中的 @Path ("/category/{id}")。
+
+添加json支持：
+
+在@Produces 和 @Consumes注解中添加application/json，指定CategoryService除了application/xml外，还接收和产生application/json。CXF运行时会处理HTTP JSON请求到JAVA对象的转换，还有JAVA对象到HTTP JSON响应的映射。如：@Produces({"application/json","application/xml"})   @Consumes({"application/json","application/xml"})  
+
+-----------------------------------------------------------------------------------------------------
+
+如果想发布restful webservice，要通过一个叫JAXRSServerFactoryBean的类来发布。这个类有几个方法是要了解的： 
+
+public void setResourceClasses(Class... classes); 
+那一系列的Class类型的参数，是告诉这个类，发布服务时，会用到的POJO（就像上边写的Room,Person）。 
+
+public void setAddress(String address)； 
+这个方法是告诉这个类，服务的地址，比如"http://localhost:9999" 
+
+public void setServiceBeans(Object... beans) 
+这里是重点，这个方法，要给这个用来发布服务的类一个Service bean.这个Bean是我们要手动编写的，作用是告诉服务，收到什么样的请求，应该怎么样处理。 

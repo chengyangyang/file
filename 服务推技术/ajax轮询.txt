@@ -1,0 +1,47 @@
+
+一、普通轮询
+
+1.window.setInterval(function(){$.ajax(getting)},1000);
+
+这种方法的优点在于简单、及时，缺点是，链接多数是无效重复的，请求多，难于维护、浪费服务器资源和网络资源；
+
+2.死循环；服务端当数据发生变化时，跳出循环，负责休眠 Thread.sleep(1300);
+
+二、ajax实现长连接
+
+<script type="text/javascript">
+            $(function () {
+            
+                (function longPolling() {
+                
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/communication/user/ajax.mvc",
+                        data: {"timed": new Date().getTime()},
+                        dataType: "text",
+                        timeout: 5000,
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            $("#state").append("[state: " + textStatus + ", error: " + errorThrown + " ]<br/>");
+                            if (textStatus == "timeout") { // 请求超时
+                                    longPolling(); // 递归调用
+                                
+                                // 其他错误，如网络错误等
+                                } else { 
+                                    longPolling();
+                                }
+                            },
+                        success: function (data, textStatus) {
+                            $("#state").append("[state: " + textStatus + ", data: { " + data + "} ]<br/>");
+                            
+                            if (textStatus == "success") { // 请求成功
+                                longPolling();
+                            }
+                        }
+                    });
+                })();
+                
+            });
+        </script>
+
+上面这段代码就是才有Ajax的方式完成长连接，主要优点就是和服务器始终保持一个连接。如果当前连接请求成功后，将更新数据并且继续创建一个新的连接和服务器保持联系。如果连接超时或发生异常，这个时候程序也会创建一个新连接继续请求。这样就大大节省了服务器和网络资源，提高了程序的性能，从而也保证了程序的顺序。
+
+html5中有一个websocket 可以很友好的完成长连接这一技术，

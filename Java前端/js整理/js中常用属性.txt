@@ -1,0 +1,6 @@
+
+$("#foldName").attr("path")  //得到这个id的path中的属性
+
+$("#foldName").attr("path",asdfasdf) //设定这个id的path中的属性
+
+$("#foldName").prop("")// prop 是自带的属性，attr 是自定义的属性

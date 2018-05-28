@@ -1,0 +1,15 @@
+declare
+i number;
+begin
+for i in 200..210 loop
+insert into GK_CIM_ASTELECTRICCAPACITOR (ID,NAME,BELONGSTATION) values(i+'1','电容器'||i,'1');
+end loop;
+end;
+
+
+
+commit;
+ROLLBACK;
+
+
+注意，添加完成之后需要进行提交    || 是数据库的拼接

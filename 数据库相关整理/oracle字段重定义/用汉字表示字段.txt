@@ -1,0 +1,8 @@
+SELECT b.comments 字段说明,b.column_name 字段名称,a.data_type 字段类型,a.data_length 字段长度,a.nullable 是否为空,a.data_default 默认值 FROM 
+(SELECT * FROM  cols)a,
+(SELECT * FROM  USER_col_comments)b 
+WHERE  a.table_name=b.table_name AND a.column_name=b.column_name AND b.table_name='CQ_YJZL_DWYX_QXXC' 
+
+
+
+只需要修改最后表明就可-----------CQ_YJZL_DWYX_QXXC

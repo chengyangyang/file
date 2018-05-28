@@ -1,0 +1,12 @@
+ctrl+左键点击没有找到你的源码
+1.先设置maven
+
+选中Download Artifact Sources 和 Download Artifact JavaDoc
+
+选中总包目录下的pom.xml-->右键-->Run As-->Maven build...-->
+
+“Base directory ”输入 项目的工作区间地址--> “Goals”输入 dependency:sources -->
+
+ 勾中“Update Snapshots”及“Skip Tests”--> RUN 
+
+ 

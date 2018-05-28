@@ -1,0 +1,13 @@
+
+本项目事务的注意事项：
+
+	使用hibernate4 和spring整合的过程中，类上要定义@Transactional 注解；其中session对象要使用
+	Session session = sessionfactoty.getCurrentSession();
+	它不需要，关闭session，在Junit 测试的时候，只能测试方法，不能在过程中直接使用。
+	
+
+使用的过程中，springMVC 只能扫描控制层，例如：事务的配置中就会报
+Could not obtain transaction-synchronized Session for current thread 异常；或者使用springMVC的时候，一定要配置
+use-default-filters="false" 属性
+<context:component-scan base-package="com.ch" use-default-filters="false">
+

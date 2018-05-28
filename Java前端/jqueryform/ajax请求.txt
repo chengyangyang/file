@@ -1,0 +1,53 @@
+
+jqueryform 中文件的上传
+
+   	ajaxForm()不能提交表单，，使用ajaxForm()你不需要逐个的以 JavaScript的方式获取每个表单属性的值，并且也不需要在请求路径后面通过url重写的方式传递数据。ajaxForm()会自动收集当前表单中每个属性的值，然后将其以表单提交的方式提交到目标url。这种方式提交数据较安全，并且使用起来更简单，不必写过多冗余的JavaScript代码
+
+	ajaxSubmit()马上由AJAX来提交表单。你可以在任何情况下进行该项提交。
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+导入相关
+<%request.setAttribute("path", request.getContextPath()); %>
+<!-- 引入jquery -->
+<script type="text/javascript" src="${ path}/static/js/jquery-3.1.1.min.js"></script> 
+<script type="text/javascript" src="${ path}/static/js/jquery-form.js"></script> 
+
+-------------------------------------------------------------------------------------------------------
+========================实例====================================================================
+
+jsp中
+
+<form id="uploadform" enctype="multipart/form-data">
+<input type="file" id="file" name="file" />
+<input type="button" onclick="formfile()" value="提交"/>
+</form>
+
+js中
+
+<script type="text/javascript">
+
+function formfile(){
+	alert();
+	var form = $("#uploadform");
+	var options = {
+			url:"/ssm_base/person/importExcel",
+			type:"POST",
+			dataType:"json",
+			success:function(result){
+				alert("成功"+result);
+				console.log(result);
+			},
+			error:function(result){
+				alert("失败"+result);
+				console.log(result);
+			}
+	
+	};
+	form.ajaxSubmit(options);
+
+}
+</script>
+==============================================================================================================

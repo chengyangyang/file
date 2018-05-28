@@ -1,0 +1,513 @@
+
+xml 格式：
+
+	头文件：<?xml version="1.0" encoding="utf-8" ?>
+	
+	常用的符号：
+
+	<             &lt;
+	>             &gt;
+	''            &quot;
+	&             &amp;
+	空格           &nbsp;
+
+
+	xml文档 --------------> Document 对象，代表整个xml文档；
+	节点 -----------------> Node对象，父类；
+	标签节点 -------------> Element 对象，子类；
+	属性节点 -------------> Attribute对象，子类；
+	文本节点 -------------> Text对象，子类；
+
+	Dom 解析工具：
+		最好用的工具：DOM4J（JDOM组织出来一批人开发的） 最为流行，最好用 三个框架（SSH）默认都使用的是DOM4J去读取xml		内容。
+
+	SAX解析工具：
+	Sax解析工具 （Oracle官方提供的解析工具）
+
+	Dom4J 的解析：
+
+	Element getRootElement(); //得到根标签 
+		List element = rootElement.elements();
+		rootElement.element(“指定标签名称”); //只能返回指定名称的第一个标签
+		rootElement.elementIterator(“执行名称”); //指定名称的所有标签
+		rootElement.elementIterator();
+
+	Iterator nodeIterator(); //得到一个节点的迭代器
+
+	Element.attributesValue(“属性名”); //获取当前的属性值
+
+	Element.attribute(“属性名”); //获取当前的属性对象
+	Element.attributes(); //返回List对象
+	Element.attributeIterator(); //返回一个迭代器
+	Attribute.getName(); //拿到属性名
+	Attribute.getValue(); //拿到属性值
+	Element.getText(); //获取当前指定标签下的文本内容
+	Element.elementText(“标签名”);//获取指定标签的文本内容
+
+
+1．Element元素API
+Method Comment
+getQName() 元素的QName对象
+getNamespace() 元素所属的Namespace对象
+getNamespacePrefix() 元素所属的Namespace对象的prefix
+getNamespaceURI() 元素所属的Namespace对象的URI
+getName() 元素的local name
+getQualifiedName() 元素的qualified name
+getText() 元素所含有的text内容，如果内容为空则返回一个空字符串而不是null
+getTextTrim() 元素所含有的text内容，其中连续的空格被转化为单个空格，该方法不会返回null
+attributeIterator() 元素属性的iterator，其中每个元素都是Attribute对象
+attributeValue() 元素的某个指定属性所含的值
+elementIterator() 元素的子元素的iterator，其中每个元素都是Element对象
+element() 元素的某个指定（qualified name或者local name）的子元素
+elementText() 元素的某个指定（qualified name或者local name）的子元素中的text信息
+getParent 元素的父元素
+getPath() 元素的XPath表达式，其中父元素的qualified name和子元素的qualified name之间使用"/"分隔
+isTextOnly() 是否该元素只含有text或是空元素
+isRootElement() 是否该元素是XML树的根节点
+2. Attribute属性API
+Method Comment
+getQName() 属性的QName对象
+getNamespace() 属性所属的Namespace对象
+getNamespacePrefix() 属性所属的Namespace对象的prefix
+getNamespaceURI() 属性所属的Namespace对象的URI
+getName() 属性的local name
+getQualifiedName() 属性的qualified name
+getValue() 属性的值
+2. 字符串转化
+实例代码：把节点，属性，文档等转化成字符串，使用asXML()方法。
+String docXmlText = document.asXML();
+String rootXmlText = root.asXML();
+ 
+实例代码：把字符串转换为文档，注意引号需要转义
+String skillString = "<skill name="xxx">神龙摆尾</skill>";
+Document d = DocumentHelper.parseText(skillString);
+3. 命名空间（Namespace）操作
+dom4j的名称空间信息api常用的方法有8个。
+dom4j在Element和Attribute 接口中定义了获取名称空间信息的方法，这些方法和JDOM中的方法相同。如下所示：
+public java.lang.String getNamespacePrefix()该方法返回元素（属性）的名称空间前缀
+public java.lang.String getNamespaceURI()该方法返回元素（属性）的名称空间
+URIpublic java.lang.String getName()该方法返回元素（属性）的本地名
+public java.lang.String getQualifiedName()该方法返回元素（属性）的限定名
+public Namespace getNamespace()该方法返回元素本身的名称空间
+public java.util.List additionalNamespaces()返回某元素上附加的名称空间声明列表，列表中的每一个对象都是Namespace类型。
+这个类的方法提供了两个方法分别获得名称空间前缀和本地名。如下：
+public java.lang.String getPrefix()该方法返回名称空间前缀。
+public java.lang.String getURI()该方法返回名称空间的URI。
+
+
+	实例1：形成Document对象
+
+	package com.jpzhutech.xml;
+
+import java.io.File;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+import org.junit.Test;
+
+public class ParseXml {
+    @Test
+    public void testParseXml(){
+        SAXReader reader = new SAXReader();  //创建一个xml文档的解析器
+        try {
+            Document document = reader.read(new File("./src/contact.xml"));  //读取xml文档，并且返回Document对象
+            System.out.println(document);  //输出为：org.dom4j.tree.DefaultDocument@2e3fe12e [Document: name file:///G:/Java/source/xml/./src/contact.xml]
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+实例2：读取所有的标签节点
+
+package com.jpzhutech.xml;
+
+import java.io.File;
+import java.util.Iterator;
+import org.dom4j.Branch;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.junit.Test;
+
+public class readXmlContext {
+    //主要目的用于得到节点的信息
+    @Test
+    public void test1(){
+        SAXReader reader = new SAXReader();  //获取reader用于将xml读进内存形成Document对象
+        try {
+            Document document = reader.read(new File("./src/contact.xml")); //其中.代表的是整个项目的根目录
+            Iterator<Node> nodeIterator = document.nodeIterator(); //得到节点的迭代器，返回的是所有的子节点对象只包含直接的子节点，不包含孙子节点甚至更为以下的节点
+            while(nodeIterator.hasNext()){  
+                Node node = nodeIterator.next();
+                String name = node.getName();
+                System.out.println(name);
+
+                //继续取出下面的子节点，一定要明白，只有标签才有子节点，其它的比如属性、文本等都没有子节点
+
+                if(node instanceof Element){ //判断是否为节点，这样才能继续向下读取子节点
+                    Element element = (Element) node;   //如果节点为标签节点，将其进行强制类型转换为标签节点
+                    Iterator<Node> nodeIterator2 = element.nodeIterator();
+                    while(nodeIterator2.hasNext()){
+                        Node next = nodeIterator2.next();
+                        String name2 = next.getName();
+                        System.out.println(name2);
+
+                        if(next instanceof Element){
+                            Element element2 = (Element)next;
+                            Iterator<Node> nodeIterator3 = element2.nodeIterator();
+                            while(nodeIterator3.hasNext()){
+                                Node next2 = nodeIterator3.next();
+                                String name3 = next2.getName();
+                                System.out.println(name3);
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }  
+    }
+}
+
+实例3：改造实例2
+
+package com.jpzhutech.xml;
+
+import java.io.File;
+import java.util.Iterator;
+
+import org.dom4j.Branch;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.junit.Test;
+
+public class readXmlContext {
+    //主要目的用于得到节点的信息
+    @Test
+    public void test1(){
+        SAXReader reader = new SAXReader();  //获取reader用于将xml读进内存形成Document对象
+        try {
+            Document document = reader.read(new File("./src/contact.xml")); //其中.代表的是整个项目的根目录
+            Iterator<Node> nodeIterator = document.nodeIterator(); //得到节点的迭代器，返回的是所有的子节点对象只包含直接的子节点，不包含孙子节点甚至更为以下的节点
+            while(nodeIterator.hasNext()){  
+                Node node = nodeIterator.next();
+                String name = node.getName();
+                System.out.println(name);
+
+                //继续取出下面的子节点，一定要明白，只有标签才有子节点，其它的比如属性、文本等都没有子节点
+
+                if(node instanceof Element){ //判断是否为节点，这样才能继续向下读取子节点
+                    Element element = (Element) node;   //如果节点为标签节点，将其进行强制类型转换为标签节点
+                    Iterator<Node> nodeIterator2 = element.nodeIterator();
+                    while(nodeIterator2.hasNext()){
+                        Node next = nodeIterator2.next();
+                        String name2 = next.getName();
+                        System.out.println(name2);
+
+                        if(next instanceof Element){
+                            Element element2 = (Element)next;
+                            Iterator<Node> nodeIterator3 = element2.nodeIterator();
+                            while(nodeIterator3.hasNext()){
+                                Node next2 = nodeIterator3.next();
+                                String name3 = next2.getName();
+                                System.out.println(name3);
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }  
+    }
+
+    @Test
+    public void test2(){
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read(new File("./src/contact.xml"));
+            Element rootElement = document.getRootElement();  //得到根标签，因为整个xml文档有且只有一个根标签
+            //System.out.println(rootElement);
+
+            //拿根节点下面的子节点（根标签下面的子标签）
+            getChildNodes(rootElement);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getChildNodes(Element element){
+        System.out.println(element.getName());
+        Iterator<Node> nodeIterator = element.nodeIterator();
+        while(nodeIterator.hasNext()){
+            Node next = nodeIterator.next();
+            String name = next.getName();
+            System.out.println(name);
+
+            if(next instanceof Element){
+                Element element2 = (Element)next;
+                getChildNodes(element2);  //递归的将所有的节点读出来
+            }
+
+        }
+    }
+}
+
+
+
+
+package com.jpzhutech.xml;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
+import org.dom4j.Branch;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
+import org.junit.Test;
+
+public class readXmlContext {
+    //主要目的用于得到节点的信息
+    @Test
+    public void test1(){
+        SAXReader reader = new SAXReader();  //获取reader用于将xml读进内存形成Document对象
+        try {
+            Document document = reader.read(new File("./src/contact.xml")); //其中.代表的是整个项目的根目录
+            Iterator<Node> nodeIterator = document.nodeIterator(); //得到节点的迭代器，返回的是所有的子节点对象只包含直接的子节点，不包含孙子节点甚至更为以下的节点
+            while(nodeIterator.hasNext()){  
+                Node node = nodeIterator.next();
+                String name = node.getName();
+                System.out.println(name);
+
+                //继续取出下面的子节点，一定要明白，只有标签才有子节点，其它的比如属性、文本等都没有子节点
+
+                if(node instanceof Element){ //判断是否为节点，这样才能继续向下读取子节点
+                    Element element = (Element) node;   //如果节点为标签节点，将其进行强制类型转换为标签节点
+                    Iterator<Node> nodeIterator2 = element.nodeIterator();
+                    while(nodeIterator2.hasNext()){
+                        Node next = nodeIterator2.next();
+                        String name2 = next.getName();
+                        System.out.println(name2);
+
+                        if(next instanceof Element){
+                            Element element2 = (Element)next;
+                            Iterator<Node> nodeIterator3 = element2.nodeIterator();
+                            while(nodeIterator3.hasNext()){
+                                Node next2 = nodeIterator3.next();
+                                String name3 = next2.getName();
+                                System.out.println(name3);
+                            }
+                        }
+                    }
+
+                }
+            }
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }  
+    }
+
+    @Test
+    public void test2(){
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read(new File("./src/contact.xml"));
+            Element rootElement = document.getRootElement();  //得到根标签，因为整个xml文档有且只有一个根标签
+            //System.out.println(rootElement);
+
+            //拿根节点下面的子节点（根标签下面的子标签）
+            getChildNodes(rootElement);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getChildNodes(Element element){
+        System.out.println(element.getName());
+        Iterator<Node> nodeIterator = element.nodeIterator();
+        while(nodeIterator.hasNext()){
+            Node next = nodeIterator.next();
+            String name = next.getName();
+            System.out.println(name);
+
+            if(next instanceof Element){
+                Element element2 = (Element)next;
+                getChildNodes(element2);  //递归的将所有的节点读出来
+            }
+
+        }
+    }
+
+    @Test
+    public void test3(){
+        SAXReader reader = new SAXReader();
+        Document document;
+        try {
+            document = reader.read(new File("./src/contact.xml"));
+
+            /*// 1. 得到根标签
+            Element rootElement = document.getRootElement();
+
+            //得到标签名称
+            String name = rootElement.getName();
+            System.out.println(name);
+            */
+            /*//2. 得到根标签的子标签
+            Element element = rootElement.element("contact");  //得到当前标签下面指定名称的第一个子标签
+            System.out.println(element.getName());*/
+
+
+            /*//3. 拿到跟标签下面所有的子标签
+            Iterator<Element> elementIterator = rootElement.elementIterator("contact");
+            while(elementIterator.hasNext()){
+                Element next = elementIterator.next();
+                String name2 = next.getName();
+                System.out.println(name2);
+            }*/
+
+            /*//4. 使用另外的迭代器方法
+            Iterator<Element> elementIterator2 = rootElement.elementIterator();
+            while(elementIterator2.hasNext()){
+                Element next = elementIterator2.next();
+                String name2 = next.getName();
+                System.out.println(name2);
+            }*/
+
+            /*//使用list集合来存放所有的成员
+            List<Element> elements = rootElement.elements();*/
+
+            /*
+            //遍历list的第一种方式，使用迭代器
+            Iterator<Element> iterator = elements.iterator();
+            while(iterator.hasNext()){
+                Element next = iterator.next();
+                System.out.println(next.getName());
+            }*/
+
+            /*
+            //遍历list的第二种方式，使用for循环
+            for(int i = 0 ; i < elements.size(); i++){
+                Element element = elements.get(i);
+                System.out.println(element.getName());
+            }
+            */
+
+            /*
+            //遍历list的第三种方式，增强for循环
+            for(Element element : elements){
+                System.out.println(element.getName());
+            }
+            */
+
+            //拿到某一个指定标签的孙子标签
+            Element element = document.getRootElement().element("contact").element("name");  //只能一个个的获取，目前还没有很好的方法解决
+            System.out.println(element.getName())s;
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }  //将xml文档转换成一个Document对象
+
+
+
+    }
+}
+
+
+
+实例4：读取所有的属性节点
+
+@Test
+    public void test4(){
+        //得到属性标签以及属性值
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read(new File("./src/contact.xml"));
+
+            //首先我想读取contact标签下面的id=001属性，想要获取属性就要先获得属性所在的标签对象
+            Element element = document.getRootElement().element("contact");  //得到属性所在的标签对象
+
+            /*//得到属性对象，得到指定名称的属性值
+            String attributeValue = element.attributeValue("id");
+            System.out.println(attributeValue);*/
+
+            /*//得到属性对象，得到该标签下所有的属性并获得其属性值
+            List<Attribute> attributes = element.attributes();
+            ListIterator<Attribute> listIterator = attributes.listIterator();
+            while(listIterator.hasNext()){
+                Attribute next = listIterator.next();
+                System.out.println(next.getName());
+                String value = next.getValue();
+                System.out.println(value);
+            }*/
+
+            /*//使用迭代器获取指定标签下的所有的属性值
+            Iterator<Attribute> attributeIterator = element.attributeIterator();
+            while(attributeIterator.hasNext()){
+                Attribute next = attributeIterator.next();
+                String name = next.getName();
+                String value = next.getValue();
+                System.out.println(name+"="+value);
+            }*/
+
+            /*//仍然是返回指定的属性
+            Attribute attribute = element.attribute("name");
+            String name = attribute.getName();
+            String value = attribute.getValue();
+            System.out.println(name + "=" + value);*/
+
+
+
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+实例5：读取所有的文本节点
+@Test
+    public void test5(){
+        //获取文本内容，想要拿到文本首先要拿到标签
+        SAXReader reader = new SAXReader();
+        try {
+            Document document = reader.read("./src/contact.xml");
+
+            /*//首先获取标签
+            Element element = document.getRootElement().element("contact").element("name");
+
+            //拿到指定文本内容
+            String text = element.getText();
+            System.out.println(text);*/
+
+            String elementText = document.getRootElement().element("contact").elementText("telephone");
+            System.out.println(elementText);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+------------------------------------------------------------------------------------------------------------------
+
+框架中的用法：
+
+	SAXReader sa = new SAXReader();   //创建一个加载器
+	Document document= sa.read(new File(url)); //获得document
+	Element rootElement = document.getRootElement();   //根节点 rootElement.getName() 得到根节点的名称
+
+
+	
+
+
+	

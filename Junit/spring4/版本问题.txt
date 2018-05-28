@@ -1,0 +1,6 @@
+spring4 使用 junit时，junit 版本4.1.1 可能会出现异常，应使用4.12及以上。
+
+
+使用
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:spring-hibernate.xml")

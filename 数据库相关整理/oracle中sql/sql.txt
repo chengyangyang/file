@@ -1,0 +1,3 @@
+select column_name from user_tab_cols where table_name = 'GK_CIM_ASTPOLEINFO'   查询表中的字段，
+
+其中，GK_CIM_ASTPOLEINFO 为表名。

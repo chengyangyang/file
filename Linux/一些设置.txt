@@ -1,0 +1,40 @@
+
+1、去掉输入滴滴或者错误的声音：
+	/etc/inputrc 中去掉 set-bell-stype none 前面的#  set-bell-stype visiable
+	/etc/rc.local 中添加 setterm-blength 0 和 /etc/rc.d/rc.local 添加rmmod pcspkr
+
+	关闭所有的声音 setterm-bfreq 10
+------------------------------------------------------------------------------------------------------
+2.查看linux是否连接网络：
+	ping 192.168.100
+	
+网络的链接需要更改ifcfg-e****(每台可能不一样)中的bootproto是不是dhcp，如果不是则修改为dhcp，此外还需要设置onboot = yes;（激活网卡） 然后用命令service network restart重启网络连接，就可以连上网络了
+
+网络的重置：service network restart
+---------------------------------------------------------------------------------------------------------
+3.改变镜像源
+
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak   备份
+
+sudo vim /etc/apt/sources.list 打开软件源
+
+粘贴下面：是清华大学的镜像源
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse
+
+# 预发布软件源，不建议启用
+# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-proposed main restricted universe multiverse
+
+sudo apt-get update   更新镜像源，要跟Ubuntu 的版本相同 https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/
+
+-------------------------------------------------------------------------------------------------------------------------
+4.更改中文输入和编码
+

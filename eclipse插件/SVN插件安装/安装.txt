@@ -1,0 +1,5 @@
+
+
+subclipse 1.8     //name Öµ
+
+http://subclipse.tigris.org/update_1.8.x   //µØÖ·

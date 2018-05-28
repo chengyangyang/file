@@ -1,0 +1,10 @@
+
+Java反射：
+
+Class<?> forName = Class.forName("com.ch.bean.Test");//获取反射的class 类；
+
+Object instance = forName.newInstance();//实例化对应的类
+
+Method[] declaredMethods = forName.getDeclaredMethods();//反射出所有的方法
+
+ 字段名.setAccessible(true);   //当字段名为私人的时，通过反射不能访问该字段，设置为true 时就可以进行访问

@@ -1,0 +1,39 @@
+https://www.cnblogs.com/xdp-gacl/p/4200090.html
+
+https://www.cnblogs.com/h--d/p/5761649.html
+
+
+注意事项：
+
+1.必须post请求
+
+2.method="post" enctype="multipart/form-data" 表头
+
+
+/**
+158      * 为防止一个目录下面出现太多文件，要使用hash算法打散存储
+159     * @Method: makePath
+160     * @Description: 
+161     * @Anthor:孤傲苍狼
+162     *
+163     * @param filename 文件名，要根据文件名生成存储目录
+164     * @param savePath 文件存储路径
+165     * @return 新的存储目录
+166     */ 
+167     private String makePath(String filename,String savePath){
+168         //得到文件名的hashCode的值，得到的就是filename这个字符串对象在内存中的地址
+169         int hashcode = filename.hashCode();
+170         int dir1 = hashcode&0xf;  //0--15
+171         int dir2 = (hashcode&0xf0)>>4;  //0-15
+172         //构造新的保存目录
+173         String dir = savePath + "\\" + dir1 + "\\" + dir2;  //upload\2\3  upload\3\5
+174         //File既可以代表文件也可以代表目录
+175         File file = new File(dir);
+176         //如果目录不存在
+177         if(!file.exists()){
+178             //创建目录
+179             file.mkdirs();
+180         }
+181         return dir;
+182     }
+183 

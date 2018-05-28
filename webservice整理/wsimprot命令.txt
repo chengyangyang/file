@@ -1,0 +1,8 @@
+wsimprot http://...........?wsdl ;解析wsdl(ws描述语言)，解析完毕后，可生成 Java Bean ；
+
+wsimprot -s . http://.......?wsdl; 解析完毕后可生成Class与Java源文件；
+
+wsimprot -s .-p cn.it.b http://......?wsdl; 解析完毕后可生成Class与Java源文件,并指定包；
+
+
+

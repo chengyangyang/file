@@ -1,0 +1,25 @@
+1.解压apache-maven-3.5.0-bin.zip到当前目录
+2.修改../apache-maven-3.5.0/conf/settings.xml文件
+添加maven本地版本库配置
+<localRepository>[本地目录]\maven_repository\chinasofti</localRepository>
+添加的镜像地址
+远程仓库
+<mirror>
+
+      <id>alimaven</id>
+ 
+     <mirrorOf>central</mirrorOf>
+
+      <name>aliyun maven</name>
+  
+    <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+   
+</mirror>
+
+3.配置环境变量
+在桌面右键>我的计算机>属性>高级系统设置>环境变量>系统变量 中添加M2_HOME为  [本地目录]\apache-maven-3.5.0
+在path中添加%M2_HOME%\bin
+打开cmd命令行 输入mvn -version如果能看到mvn版本信息证明配置成功
+4.在eclipse中配置maven
+打开windows>preferences>Maven>Installatins  添加maven目录，并打钩
+打开windows>preferences>Maven>User Settings 其中Global Settings和User Settings 全部设置成apache-maven-3.5.0/conf/settings.xml文件所在路径

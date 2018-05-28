@@ -1,0 +1,5 @@
+
+数据库编码格式。
+my.ini中修改 
+default-character-set=utf8
+character-set-server=utf8

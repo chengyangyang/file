@@ -1,0 +1,9 @@
+
+一、sql 语句中， * 和 rownum 不能同时使用，要想使用，需要给表名加上一个别名，别名.* ,rownum 这样就能够使用。  
+
+二、TO_CHAR(LCSJ,'yyyy-iw') = TO_CHAR(SYSDATE,'yyyy-iw')"; 得到今年周数
+
+
+select to_date((YEAR || '-' || MONTH || '-' ||DAY),'yyyy-mm-dd') from GK_CIM_TF_MAINTENANCEPLAN where DAY is not null and to_char(sysdate,'iw') = to_char(to_date((YEAR || '-' || MONTH || '-' ||DAY),'yyyy-mm-dd'),'iw')
+
+三、分组查询个数时，要注意null，否则可能会有空指针异常

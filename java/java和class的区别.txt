@@ -1,0 +1,16 @@
+
+1、java 是自己编写的代码 ，class 文件是java 文件编译后的字节码文件，class 文件，能够在任何一个安装虚拟机的计算机上运行。
+
+2、代码写的是java 文件 ， 编译后是 class 文件，运行的是 .class 文件；
+
+3、class类的对象用于表示当前运行的java 应用程序中的类和接口；
+
+
+
+	Class dd =	Test.class;   //当前类
+	URL resource = dd.getResource("");//获得当前类的路径 如：file:/E:/Eclipse/chengxu/test/build/classes/test/
+	ClassLoader classLoader = dd.getClassLoader();//获得类的加载器
+	URL resource1 = classLoader.getResource("");// 获得加载器的路径如： file:/E:/Eclipse/chengxu/test/build/classes/
+	String path = resource.getPath();//去掉了前面的file 如：/E:/Eclipse/chengxu/test/build/classes/test/
+
+	String relativelyPath=System.getProperty("user.dir");  得到本项目的路径 列如：E:\Eclipse\chengxu\maven_ssh
