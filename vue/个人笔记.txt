@@ -1,0 +1,16 @@
+
+--------------------------------------watch的用法-----------------------------
+  watch 是用于监听数据、路由、对象等的变化。
+ 例如：
+ watch: {
+ firstName: {
+  handler(newName, oldName) {
+   this.fullName = newName + ' ' + this.lastName;
+  },
+  // 代表在wacth里声明了firstName这个方法之后立即先去执行handler方法
+  immediate: true,
+  // 是否深度进行监听，就像数组中，会遍历进行监听，开销很大
+  deep: true 
+ }
+}
+-------------------------------------------------------------------------------
