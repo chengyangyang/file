@@ -1,1 +1,32 @@
 
+--------------------Docker------------------------
+
+1.docker images 镜像的查看（镜像仓库、标签、镜像id、创建时间、镜像大小）
+
+2.docker save centos > /opt/centos.tar.gz  镜像的导出，导出为一个文件
+
+3.docker load < /opt/centos.tar.gz 镜像的导入加载
+
+4.docker rmi 813e3731b203 镜像的删除，可用空格隔开多个id
+
+5.docker ps -a 查看容器的状态
+
+6.docker run --name mydocker -t -i centos /bin/bash  创建容器，其中--name是指定容器的名称，-t是分配一个终端，-i是容器的标准输入保持打开状态
+
+7.exit 是从容器中退到主机中
+
+8.docker stop id 停止容器
+
+9.docker start id 启动容器
+
+10.docker attach id 进入容器
+
+11.docker rm id 删除容器，加 -f 强制删除
+
+12.docker run -d -P nginx 容器端口的随机映射
+
+13.docker run -d -p 81:80 nginx 容器指定端口的映射
+
+14.docker log +ID 查看日志
+
+15.
