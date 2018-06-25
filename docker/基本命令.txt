@@ -29,4 +29,88 @@
 
 14.docker log +ID 查看日志
 
-15.
+15.docker inspect id 查看容器的所有信息
+
+16.docker run -it --name volume-test1 -v /data centos 创建一个数据卷，名称是volume-test1，挂载到data下默认挂载目录
+
+17.docker run -it --name volume-test1 -v /opt:/opt centos 指定挂载目录 将/opt挂载到/opt目录下
+
+18.ll /var/lib/docker/volumes/55c97df0276bb887939/_data 查看挂载的位置，后面为查看容器信息的Source
+
+19.cd /var/lib/docker/volumes/55c97df0276bb887939/_data 进入到挂载点
+
+20.docker run -it --name volume-test1 -v /opt:/opt:rw centos 只需要在挂载后面加上权限即可加读写rw只读ro
+
+-------------------------------让一个容器访问另外一个容器的数据卷----------------------------------------
+
+启动nfs容器，挂在一个卷，使用-d直接在后台执行
+[root@linux-node2 ~]# docker run -d --name nfs -v /data centos 
+209bc89b365ad6bc1eeae693ada01c04c2d08e9ee2b8816e624882944c116126
+
+启动test1容器，挂载到nfs的数据卷容器上，
+[root@linux-node2 ~]# docker run -it --name test1 --volumes-from nfs centos
+[root@5e399198d6a8 /]# ls /data/
+查看没内容
+
+找到nfs容器的ID
+[root@linux-node2 opt]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                     PORTS               NAMES
+209bc89b365a        centos              "/bin/bash"         2 minutes ago        Exited (0) 2 minutes ago                       nfs
+找到nfs容器的挂载点
+[root@linux-node2 _data]# docker inspect nfs
+[root@linux-node2 opt]# cd /var/lib/docker/volumes/3938c9b1143d41340e148a4c7bc12d13b53966b15380c5b958a9e035897450d5/_data
+[root@linux-node2 _data]# touch cgt
+
+到test1上查看
+[root@5e399198d6a8 /]# ls /data/
+cgt
+-------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------如何制作镜像----------------------------------------------
+一、
+1）创建一个容器mynginx，使用centos镜像
+[root@linux-node2 ~]# docker run --name mynginx -it centos
+[root@f9c7dfb6f552 /]# rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm
+[root@f9c7dfb6f552 /]# yum -y install nginx
+[root@f9c7dfb6f552 /]# exit 
+2）基于mynginx容器做一个镜像mynginx:v1
+[root@linux-node2 ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+f9c7dfb6f552        centos              "/bin/bash"         3 minutes ago       Exited (0) 15 seconds ago                       mynginx
+基于mynginx这个容器做一个镜像
+[root@linux-node2 ~]# docker commit -m "my nginx" f9c7dfb6f552 cgt/mynginx:v1
+3f3adc859b77b2b47c3631229761bee6c7066f1c708bc01c5173c2ef5c0adce8
+提交镜像，同时打一个标签叫mynginx:v1，cgt相当于你向github上提交的用户名
+
+查看镜像
+[root@linux-node2 ~]# docker images
+REPOSITORY                           TAG                 IMAGE ID            CREATED              VIRTUAL SIZE
+cgt/mynginx                          v1                  3f3adc859b77        About a minute ago   326.4 MB
+3）基于mynginx:v1创建一个容器mynginxv1
+[root@linux-node2 ~]# docker run -it --name nginxv1 cgt/mynginx:v1
+[root@ea64c5855006 /]# vi /etc/nginx/nginx.conf
+daemon off;      # 不再后台运行
+[root@ea64c5855006 /]# exit 
+exit
+
+[root@linux-node2 ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+ea64c5855006        cgt/mynginx:v1      "/bin/bash"         2 minutes ago       Exited (0) 42 seconds ago                       nginxv1
+4）基于mynginxv1提交mynginxv2版本
+重新提交V2版本
+[root@linux-node2 ~]# docker commit -m "my nginx" ea64c5855006  cgt/mynginx:v2
+a480cdf9055ec4e640c65df6404c6ba42903ea77198a26cec75eef0e4965fe67
+查看V2镜像
+[root@linux-node2 ~]# docker images
+REPOSITORY                           TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+cgt/mynginx                          v2                  a480cdf9055e        25 seconds ago
+5）基于mynginxv2镜像，创建mynginxv2容器
+启动容器，-d后台运行，-p指定端口 在后面是镜像，最后是命令（因为是yum安装的，可以直接写nginx,如果不是yum，那要写绝对路径）
+[root@linux-node2 ~]# docker run -d -p 82:80 cgt/mynginx:v2 nginx
+4eaf8a19034a673100f9355504628fad45e6ecbab91615afd6cb4e7a18b82171
+
+[root@linux-node2 ~]# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                NAMES
+4eaf8a19034a        cgt/mynginx:v2      "nginx"             15 seconds ago      Up 14 seconds       0.0.0.0:82->80/tcp   elegant_leakey
+可以在浏览器访问82端口
+
