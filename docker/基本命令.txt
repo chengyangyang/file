@@ -114,3 +114,38 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 4eaf8a19034a        cgt/mynginx:v2      "nginx"             15 seconds ago      Up 14 seconds       0.0.0.0:82->80/tcp   elegant_leakey
 可以在浏览器访问82端口
 
+二、Dockerfile
+1）Dockerfile包含的信息
+
+    基础镜像信息 
+    维护者信息 
+    镜像操作指令 
+    容器启动时执行指令
+2）文件的编写
+[root@linux-node2 ~]# mkdir /opt/dockerfile/nginx/ -p
+[root@linux-node2 ~]# cd /opt/dockerfile/nginx/
+将index.html上传到此处
+[root@linux-node2 nginx]# vim Dockerfile
+# This is docker file
+# version v1
+# Author wangshibo
+# Base image(基础镜像)
+FROM centos
+
+# Maintainer(维护者信息)
+MAINTAINER wangshibo  2134728394@qq.com
+
+# Commands(执行命令)
+RUN rpm -ivh  http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm
+RUN yum -y install nginx
+# Add(添加文件)
+ADD index.html /usr/share/nginx/html/index.html    # index.html是自己编写的文件，放在后面的目录中，因为yum安装后Documentroot是在这里
+RUN echo "daemon off;" >>/etc/nginx/nginx.conf
+EXPOSE 80           # 对外的端口
+CMD ['nginx']       # 执行的命令
+3）构建容器，并运行
+建立newnginx容器，-t：标签，执行/opt/dockerfile/nginx/下面的默认的Dockerfile文件
+[root@linux-node2 nginx]# docker build -t cgt/mynginx:v3 /opt/dockerfile/nginx/
+ 
+[root@linux-node2 nginx]# docker run -d -p 83:80 cgt/mynginx:v3
+-------------------------------------------------------------------------------------------------------------
