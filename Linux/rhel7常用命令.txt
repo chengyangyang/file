@@ -8,6 +8,8 @@
 2.systemctl status NetworkManager 查看网络是否的状态，可用systemctl start NetworkManager 启动
 二、
 1.vim /etc/sysconfig/network-scripts/ifcfg-eno16777736 修改网中的内容
+
+虚拟机需要配置桥接的网络，需要选择桥接到哪个网络
 ---------------------------------------------------
 
 --------------------修改防火墙------------------------
