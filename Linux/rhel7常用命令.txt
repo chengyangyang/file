@@ -31,5 +31,11 @@ SELINUX=enforcing 改为disabled
 2.mount -a 查看挂载的情况
 -----------------------------------------------------------
 
---------------------配置yum源---------------------------
+--------------------终端的切换--------------------------
+常用单词：
+Terminal 终端    network-scripts 网络脚本   passwd   密码文件   nologin 禁止登陆     shutdown 关机   reboot 重启   PowerOff 关机
+grep 过滤        useradd 添加用户           graphical 图形界面
+
+tty 控制台终端    （tty1 是图形界面  tty2-6 是字符界面，图像切换到字符终端快捷键：Ctrl+alt +F2-6; 字符切换到图形 alt+F1）
+pts 虚拟终端
 
