@@ -1,0 +1,141 @@
+2 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * <Description> 菜单扩展<br>
+ * 
+ * @author lu.wei<br>
+ * @email 1025742048@qq.com <br>
+ * @date 2016年12月19日 <br>
+ * @since V1.0<br>
+ * @see com.luwei.console.mg.entity <br>
+ */
+public class MenuExt implements Serializable {
+
+    /**
+     * 菜单ID
+     */
+    private Long id;
+
+    /**
+     * 菜单名称
+     */
+    private String name;
+
+    /**
+     * 菜单地址
+     */
+    private String url;
+
+    /**
+     * 菜单图标
+     */
+    private String icon;
+
+    /**
+     * 父菜单ID
+     */
+    private Long parentId;
+
+    /**
+     * 子菜单
+     */
+    private List<MenuExt> children = new ArrayList<MenuExt>();
+
+    /**
+     * 菜单顺序
+     */
+    private Integer ordby;
+
+    /**
+     * 菜单状态
+     */
+    private String state;
+
+    //省略Getter和Setter
+
+
+    /**
+     * 
+     * <Description> 孩子节点排序<br>
+     * 
+     * @author lu.wei<br>
+     * @email 1025742048@qq.com <br>
+     * @date 2016年12月22日 下午10:54:26 <br>
+     * <br>
+     */
+    public void sortChildren() {
+        Collections.sort(children, new Comparator<MenuExt>() {
+            @Override
+            public int compare(MenuExt menu1, MenuExt menu2) {
+                int result = 0;
+
+                Integer ordby1 = menu1.getOrdby();
+                Integer ordby2 = menu2.getOrdby();
+
+                Long id1 = menu1.getId();
+                Long id2 = menu2.getId();
+                if (null != ordby1 && null != ordby2) {
+                    result = (ordby1 < ordby2 ? -1 : (ordby1 == ordby2 ? 0 : 1));
+                } else {
+                    result = (id1 < id2 ? -1 : (id1 == id2 ? 0 : 1));
+                }
+                return result;
+            }
+
+        });
+        // 对每个节点的下一层节点进行排序
+        for (Iterator<MenuExt> it = children.iterator(); it.hasNext();) {
+            it.next().sortChildren();
+        }
+    }
+
+    public List<MenuExt> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MenuExt> children) {
+        this.children = children;
+    }
+}
+
+------------------------------------------------------------------------------------
+
+public static List<MenuExt> createTreeMenus(List<MenuExt> menus) {
+        List<MenuExt> treeMenus = null;
+        if (null != menus && !menus.isEmpty()) {
+            // 创建根节点
+            MenuExt root = new MenuExt();
+            root.setName("菜单根目录");
+
+            // 组装Map数据
+            Map<Long, MenuExt> dataMap = new HashMap<Long, MenuExt>();
+            for (MenuExt menu : menus) {
+                dataMap.put(menu.getId(), menu);
+            }
+
+            // 组装树形结构
+            Set<Entry<Long, MenuExt>> entrySet = dataMap.entrySet();
+            for (Entry<Long, MenuExt> entry : entrySet) {
+                MenuExt menu = entry.getValue();
+                if (null == menu.getParentId() || 0 == menu.getParentId()) {
+                    root.getChildren().add(menu);
+                } else {
+                    dataMap.get(menu.getParentId()).getChildren().add(menu);
+                }
+            }
+
+            // 对树形结构进行二叉树排序
+            root.sortChildren();
+            treeMenus = root.getChildren();
+        }
+        return treeMenus;
+    }
+----------------------------------------------------------------------------------------------------    
+    
