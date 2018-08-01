@@ -25,9 +25,30 @@ TLD文件元素详解：
 <name>         使用的属性名称
 <function-class> 所对应的雷鸣
 <function-signature> 类中对应的方法
+<example>          <!-- 自定义标签的使用示范 ，域参数会自动传递到具体的方法里面-->
 
 
 
+实例：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+	
+	 <tlib-version>1.0</tlib-version>
+	 <short-name>isnull</short-name><!-- 定义标签使用的短名称 -->
+	 
+	 <!-- 自定义标签的形参都是域里面传递的参数值；自定义标签基本使用在jsp页面上 -->
+	<function>
+	   <description>判断传递内容是否为空</description><!-- 对该标签的说明 -->
+	   <name>hasvalue</name><!-- 定义标签名，放在短标签之后 -->
+	   <function-class>util.Tld_util</function-class><!-- 标签处理域值的类路径  -->
+	   <function-signature>boolean isnull(java.lang.String)</function-signature><!-- 标签处理域值的具体的类方法 -->
+	   <example>${isnull:hasvalue(obj1)}</example><!-- 自定义标签的使用示范 ，域参数会自动传递到具体的方法里面-->
+	</function>
+ 
+</taglib>
 
 --------------------------------------------------------------------------------------
 <tag>元素的子元素
