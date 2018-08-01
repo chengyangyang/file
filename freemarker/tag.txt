@@ -1,1 +1,96 @@
 
+------------------------------tld==标签参数的详解------------------------------
+
+TLD文件元素详解：
+
+每个自定义标签都必须在TLD文件中声明，TLD文件只不过是一个XML文件。根元素是<taglib>，它包含一个或者多个<tag>标签，该元素用来声明定制标签。<taglib>元素中只有<tlib-version>元素是必须的，其他都是可选的。
+
+<taglib>          TLD文件的根元素
+<tlib-version>    此标签库的版本
+<jsp-version>     此标签库依赖的JSP版本
+<short-name>      当在JSP中使用标签时，此标签库首选或者建议的前缀。当然可以完全忽略这个建议
+<description>     描述信息
+<display-name>    图形工具可显示的一个简短名称
+<icon>            图形工具可显示的图标
+<uri>             指定使用该标签库中标签的URI
+<validator>       关于该库的TagLibraryValidator信息
+<listener>        指定事件监听器类
+<function>        定义一个在EL中使用的函数
+<tag>             定义一个标签
+--------------------------------------------------------------------------------------
+<tag>元素的子元素
+
+<description>   指定针对标签的信息
+<display-name>  开发工具用于显示的一个简短名称
+<icon>          可被开发工具使用的图标
+<tag-class>     Java标签处理器类的名称。注意这是处理器类的全限定名称，比如com.xx.tag.TableTag
+<tei-class>     Javax.servlet.jsp.tagext.TagExtraInfo类的一个可选子类
+<body-content>  此标签的主体部分的内容。其值可为scriptless\tagdependent\empty,默认为empty
+<variable>      定义脚本变量信息
+<example>       使用该标签例子的可选的非正式描述
+<attribute>     包含了此标签的一个属性的元数据
+------------------------------------------------------------------------------------------
+<attribute>的子元素
+
+<description>  有关描述的文本信息
+<name>         在jsp标签中使用的属性名称
+<required>     指属性是必须的还是可选的，默认为false，表示属性可选。如果该值为true，则jsp页面必须为该属性提供一个值。可能的值true、false、yes、no
+<rtexprvalue>  指定属性是否能接受请求时表达式的值，默认为false，表示不能接受请求时表达式的值。可能值：true、false、yes、no
+<type>         属性的数据类型,该元素只能用在当<rtexprvalue>设置为true时。它指定当使用请求时属性表达式（<%= %>）返回类型。默认string
+-----------------------------------------------------------------------------------------------------------------------------------
+
+实例（继承SimpleTagSupport类方式）：
+
+编写一个DateTag标签，输出系统时间。<c1:date/>,输出的格式:2011年11月9日
+
+step1： 写一个java类，继承SimpleTagSupport类
+
+step2： override doTag()方法，在该方法里，实现相应的处理逻辑
+
+
+package mytag;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
+
+public class DateTag extends SimpleTagSupport{
+    @Override
+    public void doTag() throws JspException, IOException {
+        PageContext ctx = (PageContext)getJspContext();
+        JspWriter out = ctx.getOut();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+        out.println(sdf.format(new Date()));
+    }
+}
+
+-------------
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+    <tlib-version>1.1</tlib-version>
+    <short-name>c1</short-name>
+    <uri>http://www.tarena.com.cn/mytag1</uri>
+    <tag>
+        <name>date</name>
+        <tag-class>mytag.DateTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+</taglib>
+---------------------------------
+<%@taglib prefix="c1" uri="http://www.tarena.com.cn/mytag1" %>
+<c1:date/>
+----------------------------------------------------
+
+
+
+
+
+
+
+
