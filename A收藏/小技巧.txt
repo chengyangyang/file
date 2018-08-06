@@ -34,6 +34,27 @@ http://www.pan66.com/hot/c11jbtpb5.html
  * version 1.0
  */  
  ------------------------------------------------------
+ 
+ 
+ -------------------idea乱码--------------------------------
+ 2. 系统语言：中文
+先说明一下如果系统语言设置为中文是没有乱码问题的，所以网上大量的重复文章的办法是把"File Encoding"设置为GBK或者GB2312，但是很多系统的编码不可能因为一个IDE而更改编码，所以这种办法直接无视！！！
+
+ 切换到中文语言后分析执行参数，和英文语言下不同的是：
+
+-Dfile.encoding=GB2312(从12.1版本开始默认添加了这个参数)
+
+ 解决
+第一步:修改intellij idea配置文件：
+
+找到intellij idea安装目录，bin文件夹下面idea64.exe.vmoptions和idea.exe.vmoptions这两个文件，分别在这两个文件中添加：-Dfile.encoding=UTF-8
+
+第二步：找到intellij idea的file---settings---Editor---FileEncodings的GlobalEncoding和ProjectEncoding和Default encoding for properties都配置成UTF-8
+
+第三步：在部署Tomcat的VM options项中添加：-Dfile.encoding=UTF-8
+
+第四步：重启Intellij idea即可解决乱码问题
+----------------------------------------------------------------------------------------------------------------
 
 
 
